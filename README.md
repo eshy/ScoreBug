@@ -23,28 +23,6 @@ Your teams, logos and match state are saved in a `data` folder next to the app. 
 
 To use the control panel from a tablet or another PC on your network, double-click **ScoreBug (network)** instead (`ScoreBug (network).bat` on Windows, `.command` on macOS, `ScoreBug-network.sh` on Linux). The console window shows the address to open on the other device. It is the same as starting ScoreBug with `--lan`. Anyone on that network can then change the score, so use it on a network you trust; your computer may ask to allow network access the first time.
 
-## Run from source
-
-For developers. Needs [Node.js](https://nodejs.org/) 20 or newer.
-
-```bash
-npm install
-```
-
-```bash
-npm start
-```
-
-`npm run lan` is the same as `--lan` above. Set the `PORT` environment variable to use another port.
-
-### Build a release
-
-```bash
-npm run build:release
-```
-
-This needs Node 25.5 or newer and builds `dist/ScoreBug-<version>-<os>-<arch>.zip` for the computer it runs on. Pushing a tag such as `v0.2.0` runs [.github/workflows/release.yml](.github/workflows/release.yml), which builds the Windows, macOS and Linux zips and attaches them to a GitHub Release. Set `version` in `package.json` first; the zip names use it.
-
 ## Add it to OBS
 
 1. Sources → **+** → **Browser**.
@@ -88,6 +66,28 @@ OBS remembers the dock. Show or hide it from the Docks menu.
 - Keys: `Space` start/stop · `Q W E R` left team's score rows · `U I O P` right team's score rows · `Shift` for minus · `Ctrl+Z` undo.
 
 The match state is saved in `data/state.json` and survives a restart. A running clock keeps real time while the server is down.
+
+## Run from source
+
+For developers. Needs [Node.js](https://nodejs.org/) 20 or newer.
+
+```bash
+npm install
+```
+
+```bash
+npm start
+```
+
+`npm run lan` is the same as `--lan` above. Set the `PORT` environment variable to use another port.
+
+### Build a release
+
+```bash
+npm run build:release
+```
+
+This needs Node 25.5 or newer and builds `dist/ScoreBug-<version>-<os>-<arch>.zip` for the computer it runs on. Pushing a tag such as `v0.2.0` runs [.github/workflows/release.yml](.github/workflows/release.yml), which builds the Windows, macOS and Linux zips and attaches them to a GitHub Release. Set `version` in `package.json` first; the zip names use it.
 
 ## How it works
 
