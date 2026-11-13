@@ -34,6 +34,11 @@ const css = `
 .period { font-size: .8em; color: #b8bec9; }
 .period .stoppage { color: var(--accent); margin-left: .4em; }
 .info { grid-column: 1 / -1; padding: 5px 12px; background: var(--accent); color: #14171c; font-size: .75em; text-align: center; }
+.bug.swap .away { grid-area: 1 / 1; }
+.bug.swap .clock { grid-area: 1 / 2; }
+.bug.swap .home { grid-area: 2 / 1; }
+.bug.swap .period { grid-area: 2 / 2; }
+.bug.swap .info { grid-row: 3; }
 [hidden] { display: none !important; }
 `;
 
@@ -137,6 +142,7 @@ export default class ScoreBugCompact extends HTMLElement {
 
   _apply(data = {}, skipAnimation) {
     const d = (this._data = { ...this._data, ...data });
+    this._el.bug.classList.toggle('swap', d.homeSide === 'right');
     for (const side of ['home', 'away']) {
       const team = d[side] ?? {};
       const el = this._el[side];

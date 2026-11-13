@@ -36,6 +36,7 @@ export function toGraphicData(state, offset = 0, origin = '') {
   });
   return {
     sport: state.sport,
+    homeSide: sport.homeSide,
     home: team(state.teams.home),
     away: team(state.teams.away),
     period: state.periodStyle === 'long' ? period.long : period.short,

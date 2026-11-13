@@ -63,12 +63,15 @@
       <div class="output">
         <h3>OBS browser source</h3>
         <label class="field">Graphic <select id="graphic"></select></label>
+        <label class="field" id="position-field" hidden>Position
+          <select id="position"><option value="bottom">Bottom</option><option value="top">Top</option></select>
+        </label>
         <div class="url-row">
           <input id="url" readonly aria-label="Browser source URL" />
           <button id="copy">Copy URL</button>
           <a id="open" target="_blank" rel="noopener">Open</a>
         </div>
-        <p class="hint">Add it in OBS as a Browser source, 1920 × 1080. Shortcuts: Space start/stop · Q W E R home · U I O P away · Shift for minus · Ctrl+Z undo.</p>
+        <p class="hint">Add it in OBS as a Browser source, 1920 × 1080. Shortcuts: Space start/stop · Q W E R left team · U I O P right team · Shift for minus · Ctrl+Z undo.</p>
       </div>
       <div class="preview"><iframe id="preview" title="Preview" width="1920" height="1080"></iframe></div>
     </footer>

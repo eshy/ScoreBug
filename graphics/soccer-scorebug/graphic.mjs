@@ -45,7 +45,8 @@ const css = `
 .pips { display: flex; gap: 4px; }
 .pip { width: 16px; height: 4px; border-radius: 2px; background: currentColor; opacity: .3; }
 .pip.on { opacity: 1; }
-.cell { display: grid; place-items: center; padding: 0 18px; font-size: 28px; font-weight: 700; }
+.bug.swap .home { order: 1; }
+.cell { order: 2; display: grid; place-items: center; padding: 0 18px; font-size: 28px; font-weight: 700; }
 .cell[hidden] { display: none; }
 .period { background: #232831; }
 .clock { min-width: 3.4em; font-size: 34px; }
@@ -169,6 +170,7 @@ export default class ScoreBug extends HTMLElement {
 
   _apply(data = {}, skipAnimation) {
     const d = (this._data = { ...this._data, ...data });
+    this._el.bug.classList.toggle('swap', d.homeSide === 'right');
     for (const side of ['home', 'away']) {
       const team = d[side] ?? {};
       const el = this._el[side];

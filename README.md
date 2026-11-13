@@ -13,7 +13,7 @@ npm start
 ```
 
 - Control panel: <http://localhost:4747/control/>
-- OBS source: `http://localhost:4747/render/?graphic=scorebug`
+- OBS source: `http://localhost:4747/render/?graphic=scorebar`
 
 `npm run lan` also accepts connections from other devices on your network, so a tablet can run the control panel at `http://<this-pc-ip>:4747/control/`. Anyone on that network can then change the score.
 
@@ -29,8 +29,9 @@ Each Browser source shows one graphic. Add several sources to use more than one 
 
 | Graphic id | What it shows |
 |---|---|
-| `scorebug` | Full bar: logos, names, scores, period, clock, timeouts, possession, down & distance, shot clock, fouls, stoppage time |
-| `scorebug-compact` | Small two-row bug: short names, scores, clock, period |
+| `scorebar` | American style: centred bar at the bottom (add `&position=top` for the top), logo and name on the edges, scores towards the middle, down & distance, period, clock, shot clock, timeouts, possession, fouls |
+| `soccer-scorebug` | Soccer style: top-left bar with logos, names, scores, period, clock and stoppage time |
+| `soccer-scorebug-compact` | Soccer style: small top-left two-row bug with short names, scores, clock, period |
 | `score-only` | `21 - 14` |
 
 ## Control panel
@@ -38,9 +39,10 @@ Each Browser source shows one graphic. Add several sources to use more than one 
 - **+N** adds points, the smaller **−N** beside it corrects a mistake. Click the big score to type a value. **Undo score** steps back through score changes.
 - Clock: Start/Stop, nudges, type a time (`12:30`, `12` = minutes, `:30` = seconds), Reset to the start of the period.
 - Football and Basketball count down; Soccer counts up from the period start (0:00, 45:00, 90:00) and keeps running into stoppage time.
+- American Football and Basketball show the visitor on the left and the home team on the right (Away at Home); Soccer shows the home team on the left. The control panel columns follow the same order.
 - **On air / Hidden** animates the graphic in and out.
 - **Teams & settings**: names, short names, colours, logos, period length, short or long period labels.
-- Keys: `Space` start/stop · `Q W E R` home score rows · `U I O P` away score rows · `Shift` for minus · `Ctrl+Z` undo.
+- Keys: `Space` start/stop · `Q W E R` left team's score rows · `U I O P` right team's score rows · `Shift` for minus · `Ctrl+Z` undo.
 
 The match state is saved in `data/state.json` and survives a restart. A running clock keeps real time while the server is down.
 

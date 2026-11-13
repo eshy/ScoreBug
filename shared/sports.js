@@ -13,6 +13,7 @@ export const SPORTS = {
       { value: 2, label: '2PT / Safety' },
       { value: 3, label: 'FG' },
     ],
+    homeSide: 'right', // Away at Home: visitor on the left
     clock: 'down',
     periodMin: 15,
     periods: [
@@ -28,6 +29,7 @@ export const SPORTS = {
     id: 'soccer',
     name: 'Soccer',
     scoreButtons: [{ value: 1, label: 'Goal' }],
+    homeSide: 'left',
     clock: 'up',
     periodMin: 45,
     // startPeriods: the running clock starts at this many period lengths.
@@ -47,6 +49,7 @@ export const SPORTS = {
       { value: 2, label: '2 pts' },
       { value: 3, label: '3 pts' },
     ],
+    homeSide: 'right',
     clock: 'down',
     periodMin: 12,
     periods: [

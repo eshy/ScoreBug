@@ -111,6 +111,13 @@ test('football down and distance, period labels', () => {
   assert.equal(s.clock.baseMs, 10 * 60_000);
 });
 
+test('American sports put the home team on the right, soccer on the left', () => {
+  const s = defaultState();
+  assert.equal(toGraphicData(s).homeSide, 'right');
+  assert.equal(toGraphicData(reduce(s, { type: 'sport.set', sport: 'basketball' }, 0)).homeSide, 'right');
+  assert.equal(toGraphicData(reduce(s, { type: 'sport.set', sport: 'soccer' }, 0)).homeSide, 'left');
+});
+
 test('graphic data shifts clock start into local time', () => {
   const s = reduce(defaultState(), { type: 'clock.start' }, 10_000);
   assert.equal(toGraphicData(s, 250).clock.startedAt, 9750);

@@ -73,6 +73,7 @@ app.get('/api/graphics', (req, res) => {
         id: manifest.id,
         name: manifest.name,
         description: manifest.description ?? '',
+        hasPosition: !!manifest.schema?.properties?.position,
         manifestUrl: `/graphics/${dir.name}/${file}`,
         mainUrl: `/graphics/${dir.name}/${manifest.main}`,
       });
@@ -125,6 +126,6 @@ scheduleExpiry();
 server.listen(PORT, HOST, () => {
   console.log(`ScoreBug running`);
   console.log(`  Control panel:  http://localhost:${PORT}/control/`);
-  console.log(`  OBS source:     http://localhost:${PORT}/render/?graphic=scorebug`);
+  console.log(`  OBS source:     http://localhost:${PORT}/render/?graphic=scorebar`);
   if (HOST === '0.0.0.0') console.log('  Reachable from other devices on your network (--lan).');
 });

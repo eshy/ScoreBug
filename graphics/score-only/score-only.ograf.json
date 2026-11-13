@@ -12,6 +12,7 @@
   "schema": {
     "type": "object",
     "properties": {
+      "homeSide": { "type": "string", "title": "Side the home team is shown on", "enum": ["left", "right"], "default": "left" },
       "home": { "type": "object", "properties": { "score": { "type": "integer", "default": 0 } } },
       "away": { "type": "object", "properties": { "score": { "type": "integer", "default": 0 } } }
     }

@@ -6,7 +6,9 @@ import { connect } from '/shared/ws-client.js';
 import { toGraphicData } from '/shared/view.js';
 
 const stage = document.getElementById('stage');
-const id = new URLSearchParams(location.search).get('graphic') || 'scorebug';
+const params = new URLSearchParams(location.search);
+const id = params.get('graphic') || 'scorebar';
+const position = params.get('position') === 'top' ? 'top' : 'bottom';
 
 function fail(message) {
   const box = document.createElement('div');
@@ -33,7 +35,7 @@ async function main() {
   let queue = Promise.resolve();
 
   async function apply(state, offset) {
-    const data = toGraphicData(state, offset, location.origin);
+    const data = { ...toGraphicData(state, offset, location.origin), position };
     if (!loaded) {
       await el.load({
         data,

@@ -1,8 +1,8 @@
 {
   "$schema": "https://ograf.ebu.io/v1/specification/json-schemas/graphics/schema.json",
-  "id": "scorebug-compact",
+  "id": "soccer-scorebug-compact",
   "version": "0.1.0",
-  "name": "Score bug (compact)",
+  "name": "Soccer score bug (compact, top left)",
   "description": "Small two-row bug with short team names, scores, clock and period. No logos.",
   "author": { "name": "ScoreBug" },
   "main": "graphic.mjs",
@@ -12,6 +12,7 @@
   "schema": {
     "type": "object",
     "properties": {
+      "homeSide": { "type": "string", "title": "Side the home team is shown on", "enum": ["left", "right"], "default": "left" },
       "home": { "$ref": "#/$defs/team", "title": "Home team" },
       "away": { "$ref": "#/$defs/team", "title": "Away team" },
       "period": { "type": "string", "title": "Period label", "default": "1H" },

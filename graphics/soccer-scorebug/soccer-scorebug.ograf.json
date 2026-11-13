@@ -1,9 +1,9 @@
 {
   "$schema": "https://ograf.ebu.io/v1/specification/json-schemas/graphics/schema.json",
-  "id": "scorebug",
+  "id": "soccer-scorebug",
   "version": "0.1.0",
-  "name": "Score bug (full bar)",
-  "description": "Bar with team logos, names, scores, period, clock and sport extras.",
+  "name": "Soccer score bug (top left)",
+  "description": "Top-left bar with team logos, names, scores, period, clock and sport extras.",
   "author": { "name": "ScoreBug" },
   "main": "graphic.mjs",
   "supportsRealTime": true,
@@ -13,6 +13,7 @@
     "type": "object",
     "properties": {
       "sport": { "type": "string", "title": "Sport", "default": "football" },
+      "homeSide": { "type": "string", "title": "Side the home team is shown on", "enum": ["left", "right"], "default": "left" },
       "home": { "$ref": "#/$defs/team", "title": "Home team" },
       "away": { "$ref": "#/$defs/team", "title": "Away team" },
       "period": { "type": "string", "title": "Period label", "default": "Q1" },

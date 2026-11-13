@@ -18,8 +18,11 @@ const css = `
   opacity: 0;
 }
 .num { display: inline-block; min-width: 0.7em; text-align: center; }
-.home { text-align: right; }
-.away { text-align: left; }
+.home { order: 1; }
+.dash { order: 2; }
+.away { order: 3; }
+.swap .home { order: 3; }
+.swap .away { order: 1; }
 `;
 
 const ok = (extra) => ({ statusCode: 200, ...extra });
@@ -33,7 +36,7 @@ export default class ScoreOnly extends HTMLElement {
 
   async load({ data } = {}) {
     this.shadowRoot.innerHTML = `<style>${css}</style>
-      <div class="score"><span class="num home">0</span><span>-</span><span class="num away">0</span></div>`;
+      <div class="score"><span class="num home">0</span><span class="dash">-</span><span class="num away">0</span></div>`;
     this._root = this.shadowRoot.querySelector('.score');
     this._home = this.shadowRoot.querySelector('.home');
     this._away = this.shadowRoot.querySelector('.away');
@@ -67,6 +70,7 @@ export default class ScoreOnly extends HTMLElement {
 
   _apply(data = {}, skipAnimation) {
     this._data = { ...this._data, ...data };
+    this._root.classList.toggle('swap', this._data.homeSide === 'right');
     this._set(this._home, this._data.home?.score ?? 0, skipAnimation);
     this._set(this._away, this._data.away?.score ?? 0, skipAnimation);
   }

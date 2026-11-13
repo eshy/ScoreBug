@@ -33,6 +33,7 @@ header h1 { font-size: 18px; margin-right: 8px; }
 .spacer { flex: 1; }
 .field { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
 .field select { color: var(--text); }
+.field[hidden] { display: none; }
 .toggle.on { background: var(--go); border-color: var(--go); font-weight: 600; }
 .toggle.off { background: var(--stop); border-color: var(--stop); font-weight: 600; }
 .danger { border-color: #7f1d1d; color: #fca5a5; }
@@ -45,6 +46,9 @@ main {
 }
 section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
 
+main.home-right .team[data-team="away"] { order: 1; }
+main.home-right .center { order: 2; }
+main.home-right .team[data-team="home"] { order: 3; }
 .team { border-top: 6px solid var(--team, var(--line)); display: flex; flex-direction: column; gap: 12px; }
 .team-head { display: flex; align-items: center; gap: 12px; min-height: 48px; }
 .team-head .logo { width: 48px; height: 48px; object-fit: contain; }
@@ -121,7 +125,7 @@ fieldset input, fieldset select { color: var(--text); }
 
 @media (max-width: 900px) {
   main { grid-template-columns: 1fr 1fr; }
-  .center { grid-column: 1 / -1; grid-row: 1; }
+  .center, main.home-right .center { grid-column: 1 / -1; grid-row: 1; order: 0; }
   footer { grid-template-columns: 1fr; }
   .team .score { font-size: 64px; }
   .plus kbd { display: none; }

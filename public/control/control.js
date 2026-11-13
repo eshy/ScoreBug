@@ -5,7 +5,9 @@ import { downAndDistance } from '/shared/view.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const TEAMS = ['home', 'away'];
-const KEYS = { home: ['Q', 'W', 'E', 'R'], away: ['U', 'I', 'O', 'P'] };
+// Shortcuts follow the screen: Q W E R is the left team, U I O P the right.
+const KEYS = { left: ['Q', 'W', 'E', 'R'], right: ['U', 'I', 'O', 'P'] };
+const sideOf = (team, sport) => ((team === 'home') === (sport.homeSide === 'left') ? 'left' : 'right');
 
 let state = null;
 let builtSport = null;
@@ -35,13 +37,14 @@ function buildForSport(sport) {
       .map(
         (b, i) => `<div class="row">
           <button class="plus" data-cmd='${cmdAttr({ type: 'score.add', team, delta: b.value })}'>
-            <b>+${b.value}</b><small>${b.label}</small><kbd>${KEYS[team][i]}</kbd>
+            <b>+${b.value}</b><small>${b.label}</small><kbd>${KEYS[sideOf(team, sport)][i]}</kbd>
           </button>
           ${btn(`−${b.value}`, { type: 'score.add', team, delta: -b.value }, 'minus')}
         </div>`,
       )
       .join('');
   }
+  $('main').classList.toggle('home-right', sport.homeSide === 'right');
   $('#periods').innerHTML = sport.periods
     .map((p) => `<button data-period="${p.id}" title="${p.long}">${p.short}</button>`)
     .join('');
@@ -74,9 +77,9 @@ function extrasHtml() {
       <div class="seg">${btn('New 1st &amp; 10', { type: 'football.set', down: 1, distance: 10, goal: false })}</div>
       <h3>Possession</h3>
       <div class="seg">
-        ${btn('◀ Home', { type: 'football.set', possession: 'home' }, active(f.possession === 'home'))}
+        ${btn('◀ Away', { type: 'football.set', possession: 'away' }, active(f.possession === 'away'))}
         ${btn('None', { type: 'football.set', possession: '' }, active(!f.possession))}
-        ${btn('Away ▶', { type: 'football.set', possession: 'away' }, active(f.possession === 'away'))}
+        ${btn('Home ▶', { type: 'football.set', possession: 'home' }, active(f.possession === 'home'))}
       </div>`;
   }
   if (state.sport === 'basketball') {
@@ -221,7 +224,8 @@ document.addEventListener('keydown', (e) => {
   }
   if (e.repeat) return;
   for (const team of TEAMS) {
-    const button = SPORTS[state.sport].scoreButtons[KEYS[team].indexOf(key)];
+    const sport = SPORTS[state.sport];
+    const button = sport.scoreButtons[KEYS[sideOf(team, sport)].indexOf(key)];
     if (button) send({ type: 'score.add', team, delta: e.shiftKey ? -button.value : button.value });
   }
 });
@@ -270,17 +274,26 @@ async function initOutput() {
   const graphics = await (await fetch('/api/graphics')).json();
   const select = $('#graphic');
   for (const g of graphics) select.add(new Option(g.name, g.id));
-  select.value = localStorage.getItem('graphic') ?? 'scorebug';
+  const fallback = state?.sport === 'soccer' ? 'soccer-scorebug' : 'scorebar';
+  select.value = localStorage.getItem('graphic') ?? fallback;
+  if (!select.value) select.value = fallback; // e.g. a saved id that no longer exists
   if (!select.value && graphics[0]) select.value = graphics[0].id;
+  const position = $('#position');
+  position.value = localStorage.getItem('position') ?? 'bottom';
 
   const update = () => {
-    const url = `${location.origin}/render/?graphic=${encodeURIComponent(select.value)}`;
+    const hasPosition = graphics.find((g) => g.id === select.value)?.hasPosition;
+    $('#position-field').hidden = !hasPosition;
+    let url = `${location.origin}/render/?graphic=${encodeURIComponent(select.value)}`;
+    if (hasPosition && position.value === 'top') url += '&position=top';
+    localStorage.setItem('position', position.value);
     $('#url').value = url;
     $('#open').href = url;
     $('#preview').src = url;
     localStorage.setItem('graphic', select.value);
   };
   select.addEventListener('change', update);
+  position.addEventListener('change', update);
   update();
 
   $('#copy').addEventListener('click', async () => {
