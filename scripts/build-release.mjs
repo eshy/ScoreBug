@@ -3,6 +3,7 @@
 //   dist/ScoreBug-<version>-<os>-<arch>/
 //     ScoreBug(.exe)     Node.js + the server in one executable
 //     public/ shared/    the control panel and renderer pages
+//     ScoreBug (network) launcher that starts it with --lan
 //     graphics/          the templates (users can add their own here)
 //     docs/ README.txt
 //   dist/ScoreBug-<version>-<os>-<arch>.zip
@@ -72,6 +73,16 @@ for (const dir of ['public', 'shared', 'graphics', 'docs']) {
 }
 
 const launcher = process.platform === 'win32' ? 'ScoreBug.exe' : 'ScoreBug';
+
+// A second thing to double-click that starts ScoreBug with --lan, for people
+// who run the control panel on a tablet or another PC.
+const lanLauncher = { win32: 'ScoreBug (network).bat', darwin: 'ScoreBug (network).command' }[process.platform] ?? 'ScoreBug-network.sh';
+if (process.platform === 'win32') {
+  fs.writeFileSync(path.join(outDir, lanLauncher), '@echo off\r\n"%~dp0ScoreBug.exe" --lan %*\r\n');
+} else {
+  fs.writeFileSync(path.join(outDir, lanLauncher), '#!/bin/sh\ncd "$(dirname "$0")" || exit 1\nexec ./ScoreBug --lan "$@"\n');
+  fs.chmodSync(path.join(outDir, lanLauncher), 0o755);
+}
 fs.writeFileSync(
   path.join(outDir, 'README.txt'),
   `ScoreBug ${pkg.version}
@@ -83,11 +94,17 @@ fs.writeFileSync(
 
 Control panel:  http://localhost:4747/control/
 
+To use the control panel from a tablet or another PC, double-click
+"${lanLauncher}" instead. The console window then shows the address to open
+on the other device. Anyone on the same network can change the score, so
+use it on a network you trust. Your computer may ask to allow network access
+the first time.
+
 Your teams, logos and match state are saved in the "data" folder here.
 To add your own templates see docs/custom-templates.md.
 
 Options (run from a terminal):
-  ${launcher} --lan       let other devices on your network use the control panel
+  ${launcher} --lan       the same as "${lanLauncher}"
   ${launcher} --no-open   do not open the browser on start
 `.replace(/\n/g, process.platform === 'win32' ? '\r\n' : '\n'),
 );

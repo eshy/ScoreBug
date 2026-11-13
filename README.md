@@ -21,7 +21,7 @@ Your teams, logos and match state are saved in a `data` folder next to the app. 
 - Control panel: <http://localhost:4747/control/>
 - OBS source: `http://localhost:4747/render/?graphic=scorebar`
 
-To use the control panel from a tablet or another PC on your network, start ScoreBug from a terminal with `--lan` and open `http://<this-pc-ip>:4747/control/` there. Anyone on that network can then change the score.
+To use the control panel from a tablet or another PC on your network, double-click **ScoreBug (network)** instead (`ScoreBug (network).bat` on Windows, `.command` on macOS, `ScoreBug-network.sh` on Linux). The console window shows the address to open on the other device. It is the same as starting ScoreBug with `--lan`. Anyone on that network can then change the score, so use it on a network you trust; your computer may ask to allow network access the first time.
 
 ## Run from source
 

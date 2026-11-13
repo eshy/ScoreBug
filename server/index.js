@@ -2,6 +2,7 @@ import express from 'express';
 import { WebSocketServer } from 'ws';
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -185,6 +186,17 @@ server.listen(PORT, HOST, () => {
   console.log('');
   console.log(`  Control panel:  ${controlUrl}`);
   console.log(`  OBS source:     http://localhost:${PORT}/render/?graphic=scorebar`);
-  if (HOST === '0.0.0.0') console.log('  Reachable from other devices on your network (--lan).');
+  if (HOST === '0.0.0.0') {
+    const addresses = Object.values(os.networkInterfaces())
+      .flat()
+      // 169.254.x.x are self-assigned addresses of unconnected adapters.
+      .filter((a) => a && a.family === 'IPv4' && !a.internal && !a.address.startsWith('169.254.'))
+      .map((a) => a.address);
+    console.log('');
+    console.log('  Network mode: other devices on your network can open the control panel at');
+    for (const address of addresses) console.log(`    http://${address}:${PORT}/control/`);
+    if (!addresses.length) console.log('    (no network connection found)');
+    console.log('  Anyone on this network can change the score.');
+  }
   if (openOnStart) openBrowser(controlUrl);
 });
