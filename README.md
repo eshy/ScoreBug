@@ -53,8 +53,6 @@ This needs Node 25.5 or newer and builds `dist/ScoreBug-<version>-<os>-<arch>.zi
 
 Each Browser source shows one graphic. Add several sources to use more than one at once.
 
-To keep the control panel inside OBS, add it as a dock: Docks → **Custom Browser Docks**, with the control panel URL.
-
 | Graphic id | What it shows |
 |---|---|
 | `scorebar` | American style: centred bar at the bottom (add `&position=top` for the top), logo and name on the edges, scores towards the middle, down & distance, period, clock, shot clock, timeouts, possession, fouls |
@@ -62,6 +60,21 @@ To keep the control panel inside OBS, add it as a dock: Docks → **Custom Brows
 | `soccer-scorebug` | Soccer style: top-left bar with logos, names, scores, period, clock and stoppage time |
 | `soccer-scorebug-compact` | Soccer style: small top-left two-row bug with short names, scores, clock, period |
 | `score-only` | `21 - 14` |
+
+### Use the control panel inside OBS
+
+You can keep the control panel in the OBS window as a dock, instead of switching to a browser.
+
+1. Start ScoreBug.
+2. In OBS: Docks → **Custom Browser Docks...**
+3. Dock Name: `ScoreBug`. URL: `http://localhost:4747/control/`. Click **Apply**, then **Close**.
+4. A ScoreBug panel appears. Drag it by its title bar to dock it beside your scenes, or leave it floating on a second monitor.
+
+OBS remembers the dock. Show or hide it from the Docks menu.
+
+- Start ScoreBug before OBS. If the dock is empty because ScoreBug was not running, start ScoreBug, then turn the dock off and on again in the Docks menu.
+- In a narrow dock the clock moves to the top with the two teams side by side below it. Make the dock wider than about 900 pixels for the three-column layout.
+- The keyboard shortcuts work only while the dock has focus, so click inside it first.
 
 ## Control panel
 
