@@ -118,6 +118,20 @@ test('American sports put the home team on the right, soccer on the left', () =>
   assert.equal(toGraphicData(reduce(s, { type: 'sport.set', sport: 'soccer' }, 0)).homeSide, 'left');
 });
 
+test('down & distance and shot clock can be switched off', () => {
+  let s = defaultState();
+  assert.equal(toGraphicData(s).info, '1st & 10');
+  s = reduce(s, { type: 'show.set', key: 'downDistance', value: false }, 0);
+  assert.equal(toGraphicData(s).info, '');
+  s = reduce(s, { type: 'sport.set', sport: 'basketball' }, 0);
+  assert.equal(toGraphicData(s).shotClock.visible, true);
+  s = reduce(s, { type: 'show.set', key: 'shotClock', value: false }, 0);
+  assert.equal(toGraphicData(s).shotClock.visible, false);
+  s = reduce(s, { type: 'match.reset' }, 0);
+  assert.equal(s.show.shotClock, false, 'the choice survives a new match');
+  assert.equal(reduce(s, { type: 'show.set', key: 'nope', value: true }, 0), s);
+});
+
 test('graphic data shifts clock start into local time', () => {
   const s = reduce(defaultState(), { type: 'clock.start' }, 10_000);
   assert.equal(toGraphicData(s, 250).clock.startedAt, 9750);

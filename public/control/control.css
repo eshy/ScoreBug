@@ -91,6 +91,8 @@ main.home-right .team[data-team="home"] { order: 3; }
 .periods { display: flex; flex-wrap: wrap; gap: 6px; }
 .periods button { flex: 1 1 auto; }
 .periods button.active, .seg button.active { background: var(--accent); border-color: var(--accent); color: #111; font-weight: 700; }
+h3.with-show { display: flex; align-items: center; justify-content: space-between; }
+h3.with-show label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 400; }
 .check { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--muted); font-size: 13px; }
 
 .extras .seg { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }

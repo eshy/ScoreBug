@@ -21,7 +21,8 @@ fs.mkdirSync(uploadDir, { recursive: true });
 function loadState() {
   try {
     const saved = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
-    if (saved.version === STATE_VERSION) return reduce(saved, { type: 'tick' });
+    // Defaults fill in anything a state saved by an older build does not have.
+    if (saved.version === STATE_VERSION) return reduce({ ...defaultState(), ...saved }, { type: 'tick' });
   } catch {
     // no saved state yet, or unreadable: start fresh
   }

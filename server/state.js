@@ -31,6 +31,8 @@ export function defaultState() {
     shotClock: { running: false, baseMs: 24_000, startedAt: 0, direction: 'down' },
     football: { down: 1, distance: 10, goal: false, possession: '' },
     soccer: { stoppage: 0 },
+    // Optional details a streamer can switch off so they need not keep them updated.
+    show: { downDistance: true, shotClock: true },
     undo: [],
   };
   resetMatch(s, 0);
@@ -190,6 +192,11 @@ export function reduce(prev, cmd, now = Date.now()) {
     }
     case 'soccer.set':
       if (cmd.stoppage !== undefined) s.soccer.stoppage = clamp(int(cmd.stoppage) ?? 0, 0, 30);
+      break;
+
+    case 'show.set':
+      if (!Object.hasOwn(s.show, cmd.key)) return prev;
+      s.show[cmd.key] = !!cmd.value;
       break;
 
     case 'settings.set':

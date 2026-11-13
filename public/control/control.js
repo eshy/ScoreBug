@@ -57,11 +57,18 @@ function stepper(label, value, cmd) {
     ${btn('−', { ...cmd, delta: -1 })}<span class="value">${value}</span>${btn('+', { ...cmd, delta: 1 })}</div>`;
 }
 
+/** Section heading with a "Show" checkbox that takes the detail off the graphic. */
+function showHeading(title, key) {
+  return `<h3 class="with-show">${title}
+    <label><input type="checkbox" data-show="${key}" ${state.show[key] ? 'checked' : ''} /> Show</label></h3>`;
+}
+
 function extrasHtml() {
   if (state.sport === 'football') {
     const f = state.football;
     const active = (on) => (on ? 'active' : '');
-    return `<h3>Down &amp; distance</h3>
+    return `${showHeading('Down &amp; distance', 'downDistance')}
+      <div ${state.show.downDistance ? '' : 'hidden'}>
       <div class="big">${downAndDistance(f) || '—'}</div>
       <div class="seg">
         ${[1, 2, 3, 4].map((d) => btn(['1st', '2nd', '3rd', '4th'][d - 1], { type: 'football.set', down: d }, active(f.down === d))).join('')}
@@ -75,6 +82,7 @@ function extrasHtml() {
         ${btn('Goal', { type: 'football.set', goal: !f.goal }, active(f.goal))}
       </div>
       <div class="seg">${btn('New 1st &amp; 10', { type: 'football.set', down: 1, distance: 10, goal: false })}</div>
+      </div>
       <h3>Possession</h3>
       <div class="seg">
         ${btn('◀ Away', { type: 'football.set', possession: 'away' }, active(f.possession === 'away'))}
@@ -83,13 +91,16 @@ function extrasHtml() {
       </div>`;
   }
   if (state.sport === 'basketball') {
-    return `<h3>Shot clock</h3>
+    return `${showHeading('Shot clock', 'shotClock')}
+      <div ${state.show.shotClock ? '' : 'hidden'}>
       <div id="shot" class="big"></div>
       <div class="seg">
         ${btn('Reset 24', { type: 'shot.set', seconds: 24 })}
         ${btn('Reset 14', { type: 'shot.set', seconds: 14 })}
         ${btn('Off', { type: 'shot.set', seconds: 0 })}
       </div>
+      </div>
+      <h3>Team fouls</h3>
       <div class="seg">${btn('Reset team fouls', { type: 'fouls.reset' })}</div>`;
   }
   if (state.sport === 'soccer') {
@@ -169,6 +180,11 @@ function tick() {
 document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-cmd]');
   if (el) send(JSON.parse(el.dataset.cmd));
+});
+
+document.addEventListener('change', (e) => {
+  const key = e.target.dataset?.show;
+  if (key) send({ type: 'show.set', key, value: e.target.checked });
 });
 
 $('#sport').addEventListener('change', (e) => {

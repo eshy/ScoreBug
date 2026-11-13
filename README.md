@@ -40,6 +40,7 @@ Each Browser source shows one graphic. Add several sources to use more than one 
 - Clock: Start/Stop, nudges, type a time (`12:30`, `12` = minutes, `:30` = seconds), Reset to the start of the period.
 - Football and Basketball count down; Soccer counts up from the period start (0:00, 45:00, 90:00) and keeps running into stoppage time.
 - American Football and Basketball show the visitor on the left and the home team on the right (Away at Home); Soccer shows the home team on the left. The control panel columns follow the same order.
+- Down & distance (football) and the shot clock (basketball) each have a **Show** checkbox. Untick it to take that detail off the graphic if you don't want to keep it updated.
 - **On air / Hidden** animates the graphic in and out.
 - **Teams & settings**: names, short names, colours, logos, period length, short or long period labels.
 - Keys: `Space` start/stop · `Q W E R` left team's score rows · `U I O P` right team's score rows · `Shift` for minus · `Ctrl+Z` undo.
