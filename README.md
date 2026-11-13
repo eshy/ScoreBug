@@ -2,7 +2,30 @@
 
 A scoreboard for live streams: an [OGraf](https://ograf.ebu.io/) graphic rendered in an OBS Browser source, driven from a control panel web page with modes for American Football, Soccer and Basketball.
 
-## Run
+## Download and run
+
+No installation needed.
+
+1. Download the zip for your computer from the [latest release](https://github.com/eshy/ScoreBug/releases/latest): Windows, macOS (Apple silicon) or Linux.
+2. Unzip it anywhere, for example your Desktop.
+3. Double-click **ScoreBug** (`ScoreBug.exe` on Windows). A console window opens and your browser shows the control panel.
+4. Keep the console window open while you stream. Close it to stop ScoreBug.
+
+The first time, your computer may warn that the app is from an unknown publisher, because the download is not code-signed:
+
+- **Windows:** click **More info**, then **Run anyway**.
+- **macOS:** right-click **ScoreBug**, choose **Open**, then **Open** again. If macOS still refuses, allow it under System Settings → Privacy & Security.
+
+Your teams, logos and match state are saved in a `data` folder next to the app. To update, unzip the new version and copy your `data` folder (and any templates you added to `graphics`) across.
+
+- Control panel: <http://localhost:4747/control/>
+- OBS source: `http://localhost:4747/render/?graphic=scorebar`
+
+To use the control panel from a tablet or another PC on your network, start ScoreBug from a terminal with `--lan` and open `http://<this-pc-ip>:4747/control/` there. Anyone on that network can then change the score.
+
+## Run from source
+
+For developers. Needs [Node.js](https://nodejs.org/) 20 or newer.
 
 ```bash
 npm install
@@ -12,12 +35,15 @@ npm install
 npm start
 ```
 
-- Control panel: <http://localhost:4747/control/>
-- OBS source: `http://localhost:4747/render/?graphic=scorebar`
+`npm run lan` is the same as `--lan` above. Set the `PORT` environment variable to use another port.
 
-`npm run lan` also accepts connections from other devices on your network, so a tablet can run the control panel at `http://<this-pc-ip>:4747/control/`. Anyone on that network can then change the score.
+### Build a release
 
-Set the `PORT` environment variable to use another port.
+```bash
+npm run build:release
+```
+
+This needs Node 25.5 or newer and builds `dist/ScoreBug-<version>-<os>-<arch>.zip` for the computer it runs on. Pushing a tag such as `v0.2.0` runs [.github/workflows/release.yml](.github/workflows/release.yml), which builds the Windows, macOS and Linux zips and attaches them to a GitHub Release. Set `version` in `package.json` first; the zip names use it.
 
 ## Add it to OBS
 
@@ -26,6 +52,8 @@ Set the `PORT` environment variable to use another port.
 3. Width 1920, Height 1080. Leave the custom CSS as is (transparent background).
 
 Each Browser source shows one graphic. Add several sources to use more than one at once.
+
+To keep the control panel inside OBS, add it as a dock: Docks → **Custom Browser Docks**, with the control panel URL.
 
 | Graphic id | What it shows |
 |---|---|

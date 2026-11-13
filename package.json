@@ -9,7 +9,11 @@
   "scripts": {
     "start": "node server/index.js",
     "lan": "node server/index.js --lan",
-    "test": "node --test"
+    "test": "node --test test/",
+    "build:release": "node scripts/build-release.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
   },
   "dependencies": {
     "express": "^5.1.0",

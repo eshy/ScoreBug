@@ -4,9 +4,16 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawn } from 'node:child_process';
+import { isSea } from 'node:sea';
 import { defaultState, reduce, msUntilExpiry, STATE_VERSION } from './state.js';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// Packaged as a single executable (see scripts/build-release.mjs), the
+// public/, shared/ and graphics/ folders sit next to the executable.
+const packaged = isSea();
+const root = packaged
+  ? path.dirname(process.execPath)
+  : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dataDir = process.env.SCOREBUG_DATA || path.join(root, 'data');
 const uploadDir = path.join(dataDir, 'uploads');
 const stateFile = path.join(dataDir, 'state.json');
@@ -103,6 +110,8 @@ app.put('/api/logo/:team', express.raw({ type: Object.keys(LOGO_TYPES), limit: '
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
+// ws re-emits the http server's errors; they are handled on `server` below.
+wss.on('error', () => {});
 
 function broadcast() {
   const msg = JSON.stringify({ type: 'state', state });
@@ -123,10 +132,44 @@ wss.on('connection', (ws) => {
   });
 });
 
+// ---- start -----------------------------------------------------------------
+
+const controlUrl = `http://localhost:${PORT}/control/`;
+// The packaged app opens the control panel itself; from source, pass --open.
+const openOnStart = (packaged || process.argv.includes('--open')) && !process.argv.includes('--no-open');
+
+function openBrowser(url) {
+  const [cmd, args] =
+    process.platform === 'win32'
+      ? ['cmd', ['/c', 'start', '', url]]
+      : process.platform === 'darwin'
+        ? ['open', [url]]
+        : ['xdg-open', [url]];
+  try {
+    spawn(cmd, args, { stdio: 'ignore', detached: true }).on('error', () => {}).unref();
+  } catch {
+    // no browser to open: the URL is printed below
+  }
+}
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use. ScoreBug is probably running already.`);
+    console.error(`  Control panel:  ${controlUrl}`);
+    if (openOnStart) openBrowser(controlUrl);
+  } else {
+    console.error(err.message);
+  }
+  // Keep a double-clicked console window open long enough to read the message.
+  setTimeout(() => process.exit(1), packaged ? 15_000 : 0);
+});
+
 scheduleExpiry();
 server.listen(PORT, HOST, () => {
-  console.log(`ScoreBug running`);
-  console.log(`  Control panel:  http://localhost:${PORT}/control/`);
+  console.log('ScoreBug is running. Keep this window open while you stream; close it to stop.');
+  console.log('');
+  console.log(`  Control panel:  ${controlUrl}`);
   console.log(`  OBS source:     http://localhost:${PORT}/render/?graphic=scorebar`);
   if (HOST === '0.0.0.0') console.log('  Reachable from other devices on your network (--lan).');
+  if (openOnStart) openBrowser(controlUrl);
 });
