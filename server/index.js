@@ -64,6 +64,7 @@ const noCache = { etag: true, maxAge: 0 };
 app.get('/', (req, res) => res.redirect('/control/'));
 app.use('/control', express.static(path.join(root, 'public/control'), noCache));
 app.use('/render', express.static(path.join(root, 'public/render'), noCache));
+app.use('/icons', express.static(path.join(root, 'public/icons'), noCache));
 app.use('/shared', express.static(path.join(root, 'shared'), noCache));
 app.use('/graphics', express.static(graphicsDir, noCache));
 app.use('/uploads', express.static(uploadDir));
@@ -94,16 +95,30 @@ app.get('/api/graphics', (req, res) => {
 
 const LOGO_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/svg+xml': 'svg' };
 
-app.put('/api/logo/:team', express.raw({ type: Object.keys(LOGO_TYPES), limit: '4mb' }), (req, res) => {
-  const { team } = req.params;
+const imageBody = express.raw({ type: Object.keys(LOGO_TYPES), limit: '4mb' });
+
+/** Saves an uploaded image and returns its URL, or null if it is not an image. */
+function saveImage(req, prefix) {
   const ext = LOGO_TYPES[req.headers['content-type']?.split(';')[0]];
-  if (!['home', 'away'].includes(team) || !ext || !Buffer.isBuffer(req.body) || !req.body.length) {
-    return res.status(400).json({ error: 'Send a PNG, JPEG, WebP or SVG image for team home or away.' });
-  }
-  const name = `${team}-${Date.now()}.${ext}`;
+  if (!ext || !Buffer.isBuffer(req.body) || !req.body.length) return null;
+  const name = `${prefix}-${Date.now()}.${ext}`;
   fs.writeFileSync(path.join(uploadDir, name), req.body);
-  dispatch({ type: 'team.update', team, logo: `/uploads/${name}` });
-  res.json({ logo: `/uploads/${name}` });
+  return `/uploads/${name}`;
+}
+
+app.put('/api/logo/:team', imageBody, (req, res) => {
+  const { team } = req.params;
+  const logo = ['home', 'away'].includes(team) ? saveImage(req, team) : null;
+  if (!logo) return res.status(400).json({ error: 'Send a PNG, JPEG, WebP or SVG image for team home or away.' });
+  dispatch({ type: 'team.update', team, logo });
+  res.json({ logo });
+});
+
+app.put('/api/possession-icon', imageBody, (req, res) => {
+  const possessionIcon = saveImage(req, 'possession');
+  if (!possessionIcon) return res.status(400).json({ error: 'Send a PNG, JPEG, WebP or SVG image.' });
+  dispatch({ type: 'settings.set', possessionIcon });
+  res.json({ possessionIcon });
 });
 
 // ---- websocket -------------------------------------------------------------

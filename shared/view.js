@@ -3,11 +3,18 @@
 
 import { SPORTS, getPeriod } from './sports.js';
 
+const BUILT_IN_ICONS = { dot: '', football: '/icons/football.svg' };
 const ORDINALS = ['', '1st', '2nd', '3rd', '4th'];
 
 export function downAndDistance(f) {
   if (!f.down) return '';
   return `${ORDINALS[f.down]} & ${f.goal ? 'Goal' : f.distance}`;
+}
+
+/** Image URL for the possession indicator, or '' for the template's own dot. */
+export function possessionIconUrl(icon, origin = '') {
+  const path = BUILT_IN_ICONS[icon] ?? icon ?? '';
+  return path ? origin + path : '';
 }
 
 /**
@@ -44,6 +51,7 @@ export function toGraphicData(state, offset = 0, origin = '') {
     shotClock: { ...local(state.shotClock), visible: !!sport.shotClock && state.show.shotClock },
     info: state.sport === 'football' && state.show.downDistance ? downAndDistance(state.football) : '',
     possession: state.sport === 'football' ? state.football.possession : '',
+    possessionIcon: possessionIconUrl(state.possessionIcon, origin),
     stoppage: state.sport === 'soccer' ? state.soccer.stoppage : 0,
     maxTimeouts: sport.timeouts,
     showFouls: !!sport.fouls,

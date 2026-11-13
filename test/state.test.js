@@ -132,6 +132,18 @@ test('down & distance and shot clock can be switched off', () => {
   assert.equal(reduce(s, { type: 'show.set', key: 'nope', value: true }, 0), s);
 });
 
+test('possession indicator can be the dot, the football or an uploaded image', () => {
+  let s = defaultState();
+  assert.equal(toGraphicData(s).possessionIcon, '');
+  s = reduce(s, { type: 'settings.set', possessionIcon: 'football' }, 0);
+  assert.equal(toGraphicData(s, 0, 'http://host').possessionIcon, 'http://host/icons/football.svg');
+  s = reduce(s, { type: 'settings.set', possessionIcon: '/uploads/possession-1.png' }, 0);
+  assert.equal(toGraphicData(s, 0, 'http://host').possessionIcon, 'http://host/uploads/possession-1.png');
+  assert.equal(reduce(s, { type: 'settings.set', possessionIcon: 'https://elsewhere/x.png' }, 0), s);
+  s = reduce(s, { type: 'match.reset' }, 0);
+  assert.equal(s.possessionIcon, '/uploads/possession-1.png', 'the choice survives a new match');
+});
+
 test('graphic data shifts clock start into local time', () => {
   const s = reduce(defaultState(), { type: 'clock.start' }, 10_000);
   assert.equal(toGraphicData(s, 250).clock.startedAt, 9750);

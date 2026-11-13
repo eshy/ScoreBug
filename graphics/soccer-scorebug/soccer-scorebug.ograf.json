@@ -21,6 +21,7 @@
       "shotClock": { "$ref": "#/$defs/clock", "title": "Shot clock" },
       "info": { "type": "string", "title": "Info text (down & distance)", "default": "" },
       "possession": { "type": "string", "enum": ["", "home", "away"], "default": "" },
+      "possessionIcon": { "type": "string", "title": "Possession indicator image URL (empty = dot)", "default": "" },
       "stoppage": { "type": "integer", "title": "Stoppage time (minutes)", "default": 0 },
       "maxTimeouts": { "type": "integer", "default": 0 },
       "showFouls": { "type": "boolean", "default": false }

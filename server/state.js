@@ -33,6 +33,8 @@ export function defaultState() {
     soccer: { stoppage: 0 },
     // Optional details a streamer can switch off so they need not keep them updated.
     show: { downDistance: true, shotClock: true },
+    // 'dot', 'football' (built-in image) or the URL of an uploaded image.
+    possessionIcon: 'dot',
     undo: [],
   };
   resetMatch(s, 0);
@@ -201,6 +203,11 @@ export function reduce(prev, cmd, now = Date.now()) {
 
     case 'settings.set':
       if (cmd.periodStyle === 'short' || cmd.periodStyle === 'long') s.periodStyle = cmd.periodStyle;
+      if (typeof cmd.possessionIcon === 'string') {
+        const icon = cmd.possessionIcon;
+        if (icon !== 'dot' && icon !== 'football' && !/^\/uploads\/[\w.-]+$/.test(icon)) return prev;
+        s.possessionIcon = icon;
+      }
       if (cmd.periodMin !== undefined) {
         const min = Number(cmd.periodMin);
         if (!Number.isFinite(min) || min <= 0 || min > 120) return prev;

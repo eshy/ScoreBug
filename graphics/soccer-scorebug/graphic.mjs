@@ -37,6 +37,9 @@ const css = `
 }
 .poss { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); margin-bottom: 6px; visibility: hidden; }
 .poss.on { visibility: visible; }
+.poss-img { height: 32px; max-width: 52px; object-fit: contain; margin-bottom: 6px; visibility: hidden; }
+.poss-img.on { visibility: visible; }
+.poss[hidden], .poss-img[hidden] { display: none; }
 .score {
   align-self: stretch; display: grid; place-items: center; min-width: 1.9em; margin-left: 4px; padding: 0 10px;
   font-size: var(--score-size); font-weight: 800; background: rgba(0,0,0,.28);
@@ -58,8 +61,8 @@ const css = `
 
 const html = `
 <div class="bug">
-  <div class="team home"><img class="logo" alt=""><span class="name"></span><span class="poss"></span><span class="score"></span><div class="meta"><span class="pips"></span><span class="fouls"></span></div></div>
-  <div class="team away"><img class="logo" alt=""><span class="name"></span><span class="poss"></span><span class="score"></span><div class="meta"><span class="pips"></span><span class="fouls"></span></div></div>
+  <div class="team home"><img class="logo" alt=""><span class="name"></span><span class="poss"></span><img class="poss-img" alt=""><span class="score"></span><div class="meta"><span class="pips"></span><span class="fouls"></span></div></div>
+  <div class="team away"><img class="logo" alt=""><span class="name"></span><span class="poss"></span><img class="poss-img" alt=""><span class="score"></span><div class="meta"><span class="pips"></span><span class="fouls"></span></div></div>
   <div class="cell period"></div>
   <div class="cell clock"></div>
   <div class="cell shot"></div>
@@ -129,6 +132,7 @@ export default class ScoreBug extends HTMLElement {
         logo: t.querySelector('.logo'),
         name: t.querySelector('.name'),
         poss: t.querySelector('.poss'),
+        possImg: t.querySelector('.poss-img'),
         score: t.querySelector('.score'),
         pips: t.querySelector('.pips'),
         fouls: t.querySelector('.fouls'),
@@ -179,7 +183,13 @@ export default class ScoreBug extends HTMLElement {
       setText(el.name, team.name ?? '');
       el.logo.hidden = !team.logo;
       if (team.logo && el.logo.getAttribute('src') !== team.logo) el.logo.src = team.logo;
+      // Possession: the operator's image if one is set, otherwise the dot.
+      const icon = d.possessionIcon || '';
+      el.poss.hidden = !!icon;
+      el.possImg.hidden = !icon;
+      if (icon && el.possImg.getAttribute('src') !== icon) el.possImg.src = icon;
       el.poss.classList.toggle('on', d.possession === side);
+      el.possImg.classList.toggle('on', d.possession === side);
 
       const score = String(team.score ?? 0);
       if (el.score.textContent !== score) {

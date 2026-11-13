@@ -33,7 +33,9 @@ header h1 { font-size: 18px; margin-right: 8px; }
 .spacer { flex: 1; }
 .field { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
 .field select { color: var(--text); }
-.field[hidden] { display: none; }
+[hidden] { display: none !important; }
+.poss-custom { display: flex; align-items: center; gap: 10px; }
+.poss-custom img { height: 32px; max-width: 60px; object-fit: contain; }
 .toggle.on { background: var(--go); border-color: var(--go); font-weight: 600; }
 .toggle.off { background: var(--stop); border-color: var(--stop); font-weight: 600; }
 .danger { border-color: #7f1d1d; color: #fca5a5; }

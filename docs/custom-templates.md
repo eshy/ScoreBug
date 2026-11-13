@@ -147,6 +147,7 @@ The frame is 1920 × 1080 with a transparent background. Position things in pixe
 | `shotClock` | object | Same shape as `clock`. `visible` is false outside basketball or when the operator unticks Show |
 | `info` | string | Football down & distance, such as `3rd & 10`. Empty when hidden or not football |
 | `possession` | `home` \| `away` \| `""` | Football possession |
+| `possessionIcon` | string | Image URL to show for possession instead of the template's own marker. Empty means use your own marker |
 | `stoppage` | number | Soccer added minutes. `0` means none |
 | `maxTimeouts` | number | Timeouts per team for the sport. `0` means the sport has none |
 | `showFouls` | boolean | True for basketball |

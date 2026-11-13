@@ -261,6 +261,7 @@ $('#setup').addEventListener('click', () => {
   }
   $('#period-min').value = state.periodMin[state.sport];
   $('#period-style').value = state.periodStyle;
+  syncPossessionIcon();
   dialog.showModal();
 });
 
@@ -280,6 +281,36 @@ for (const team of TEAMS) {
     send({ type: 'team.update', team, logo: '' });
   });
 }
+
+// Possession indicator: the dot, the built-in football, or an uploaded image.
+function syncPossessionIcon(choice) {
+  const custom = state.possessionIcon.startsWith('/uploads/');
+  choice ??= custom ? 'custom' : state.possessionIcon;
+  $('#poss-icon').value = choice;
+  $('#poss-custom').hidden = choice !== 'custom';
+  $('#poss-preview').hidden = !custom;
+  if (custom) $('#poss-preview').src = state.possessionIcon;
+  $('#poss-file').value = '';
+}
+
+$('#poss-icon').addEventListener('change', (e) => {
+  // "Your own image" takes effect once a file is chosen.
+  if (e.target.value === 'custom') syncPossessionIcon('custom');
+  else {
+    send({ type: 'settings.set', possessionIcon: e.target.value });
+    $('#poss-custom').hidden = true;
+  }
+});
+
+$('#poss-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const res = await fetch('/api/possession-icon', { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) return alert(body.error ?? 'Image upload failed.');
+  $('#poss-preview').src = body.possessionIcon;
+  $('#poss-preview').hidden = false;
+});
 
 $('#period-min').addEventListener('change', (e) => send({ type: 'settings.set', periodMin: Number(e.target.value) }));
 $('#period-style').addEventListener('change', (e) => send({ type: 'settings.set', periodStyle: e.target.value }));

@@ -100,6 +100,17 @@
         <fieldset>
           <legend>Match</legend>
           <label>Period length (minutes) <input id="period-min" type="number" min="1" max="120" step="1" /></label>
+          <label>Possession indicator
+            <select id="poss-icon">
+              <option value="dot">Dot</option>
+              <option value="football">Football</option>
+              <option value="custom">Your own image</option>
+            </select>
+          </label>
+          <div id="poss-custom" class="poss-custom" hidden>
+            <img id="poss-preview" alt="" />
+            <input id="poss-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" aria-label="Possession indicator image" />
+          </div>
           <label>Period label
             <select id="period-style">
               <option value="short">Short (Q1, 1H)</option>

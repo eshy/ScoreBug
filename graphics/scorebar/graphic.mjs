@@ -44,8 +44,10 @@ const css = `
   font-size: var(--name-size); font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
 }
 .team.right .name { text-align: right; }
-.poss { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px rgba(0,0,0,.35); visibility: hidden; }
+.poss { flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px rgba(0,0,0,.35); visibility: hidden; }
 .poss.on { visibility: visible; }
+.poss-img { flex: none; height: 46px; max-width: 76px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,.45)); visibility: hidden; }
+.poss-img.on { visibility: visible; }
 .score {
   flex: none; min-width: 1.5em; text-align: center; padding-bottom: 12px;
   font-size: var(--score-size); font-weight: 800; line-height: 1;
@@ -75,7 +77,7 @@ const css = `
 
 const team = (side) => `
   <div class="team ${side}">
-    <img class="logo" alt=""><span class="name"></span><span class="poss"></span><span class="score"></span>
+    <img class="logo" alt=""><span class="name"></span><span class="poss"></span><img class="poss-img" alt=""><span class="score"></span>
     <span class="meta"><span class="pips"></span><span class="fouls"></span></span>
   </div>`;
 
@@ -152,6 +154,7 @@ export default class ScoreBar extends HTMLElement {
         logo: t.querySelector('.logo'),
         name: t.querySelector('.name'),
         poss: t.querySelector('.poss'),
+        possImg: t.querySelector('.poss-img'),
         score: t.querySelector('.score'),
         pips: t.querySelector('.pips'),
         fouls: t.querySelector('.fouls'),
@@ -207,7 +210,13 @@ export default class ScoreBar extends HTMLElement {
       setText(el.name, (team.logo ? team.short : team.name) || team.name || '');
       el.logo.hidden = !team.logo;
       if (team.logo && el.logo.getAttribute('src') !== team.logo) el.logo.src = team.logo;
+      // Possession: the operator's image if one is set, otherwise the dot.
+      const icon = d.possessionIcon || '';
+      el.poss.hidden = !!icon;
+      el.possImg.hidden = !icon;
+      if (icon && el.possImg.getAttribute('src') !== icon) el.possImg.src = icon;
       el.poss.classList.toggle('on', d.possession === key);
+      el.possImg.classList.toggle('on', d.possession === key);
 
       const score = team.score ?? 0;
       setText(el.score, String(score));

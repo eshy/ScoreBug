@@ -71,7 +71,7 @@ To keep the control panel inside OBS, add it as a dock: Docks → **Custom Brows
 - American Football and Basketball show the visitor on the left and the home team on the right (Away at Home); Soccer shows the home team on the left. The control panel columns follow the same order.
 - Down & distance (football) and the shot clock (basketball) each have a **Show** checkbox. Untick it to take that detail off the graphic if you don't want to keep it updated.
 - **On air / Hidden** animates the graphic in and out.
-- **Teams & settings**: names, short names, colours, logos, period length, short or long period labels.
+- **Teams & settings**: names, short names, colours, logos, period length, short or long period labels, and the possession indicator (a dot, a football, or your own image).
 - Keys: `Space` start/stop · `Q W E R` left team's score rows · `U I O P` right team's score rows · `Shift` for minus · `Ctrl+Z` undo.
 
 The match state is saved in `data/state.json` and survives a restart. A running clock keeps real time while the server is down.
