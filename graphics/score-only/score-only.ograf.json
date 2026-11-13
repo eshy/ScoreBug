@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ograf.ebu.io/v1/specification/json-schemas/graphics/schema.json",
+  "id": "score-only",
+  "version": "0.1.0",
+  "name": "Score only",
+  "description": "Just the two scores with a dash, top centre.",
+  "author": { "name": "ScoreBug" },
+  "main": "graphic.mjs",
+  "supportsRealTime": true,
+  "supportsNonRealTime": false,
+  "stepCount": 1,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "home": { "type": "object", "properties": { "score": { "type": "integer", "default": 0 } } },
+      "away": { "type": "object", "properties": { "score": { "type": "integer", "default": 0 } } }
+    }
+  }
+}

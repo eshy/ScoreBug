@@ -1,0 +1,54 @@
+{
+  "$schema": "https://ograf.ebu.io/v1/specification/json-schemas/graphics/schema.json",
+  "id": "scorebug",
+  "version": "0.1.0",
+  "name": "Score bug (full bar)",
+  "description": "Bar with team logos, names, scores, period, clock and sport extras.",
+  "author": { "name": "ScoreBug" },
+  "main": "graphic.mjs",
+  "supportsRealTime": true,
+  "supportsNonRealTime": false,
+  "stepCount": 1,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "sport": { "type": "string", "title": "Sport", "default": "football" },
+      "home": { "$ref": "#/$defs/team", "title": "Home team" },
+      "away": { "$ref": "#/$defs/team", "title": "Away team" },
+      "period": { "type": "string", "title": "Period label", "default": "Q1" },
+      "clock": { "$ref": "#/$defs/clock", "title": "Game clock" },
+      "shotClock": { "$ref": "#/$defs/clock", "title": "Shot clock" },
+      "info": { "type": "string", "title": "Info text (down & distance)", "default": "" },
+      "possession": { "type": "string", "enum": ["", "home", "away"], "default": "" },
+      "stoppage": { "type": "integer", "title": "Stoppage time (minutes)", "default": 0 },
+      "maxTimeouts": { "type": "integer", "default": 0 },
+      "showFouls": { "type": "boolean", "default": false }
+    },
+    "$defs": {
+      "team": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "default": "Team" },
+          "short": { "type": "string", "default": "TEA" },
+          "color": { "type": "string", "default": "#1d4ed8" },
+          "logo": { "type": "string", "description": "Image URL", "default": "" },
+          "score": { "type": "integer", "default": 0 },
+          "timeouts": { "type": "integer", "default": 0 },
+          "fouls": { "type": "integer", "default": 0 }
+        }
+      },
+      "clock": {
+        "type": "object",
+        "description": "The graphic runs the clock itself: value = baseMs -/+ (Date.now() - startedAt) while running.",
+        "properties": {
+          "visible": { "type": "boolean", "default": true },
+          "running": { "type": "boolean", "default": false },
+          "baseMs": { "type": "number", "default": 0 },
+          "startedAt": { "type": "number", "description": "Epoch ms in the renderer's clock", "default": 0 },
+          "direction": { "type": "string", "enum": ["up", "down"], "default": "down" },
+          "tenths": { "type": "boolean", "description": "Show tenths under one minute", "default": false }
+        }
+      }
+    }
+  }
+}

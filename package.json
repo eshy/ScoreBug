@@ -1,0 +1,18 @@
+{
+  "name": "scorebug",
+  "version": "0.1.0",
+  "description": "OGraf scoreboard for OBS with a per-sport control panel",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server/index.js",
+    "lan": "node server/index.js --lan",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "ws": "^8.18.0"
+  }
+}

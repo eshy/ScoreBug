@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ograf.ebu.io/v1/specification/json-schemas/graphics/schema.json",
+  "id": "scorebug-compact",
+  "version": "0.1.0",
+  "name": "Score bug (compact)",
+  "description": "Small two-row bug with short team names, scores, clock and period. No logos.",
+  "author": { "name": "ScoreBug" },
+  "main": "graphic.mjs",
+  "supportsRealTime": true,
+  "supportsNonRealTime": false,
+  "stepCount": 1,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "home": { "$ref": "#/$defs/team", "title": "Home team" },
+      "away": { "$ref": "#/$defs/team", "title": "Away team" },
+      "period": { "type": "string", "title": "Period label", "default": "1H" },
+      "clock": { "$ref": "#/$defs/clock", "title": "Game clock" },
+      "stoppage": { "type": "integer", "title": "Stoppage time (minutes)", "default": 0 },
+      "info": { "type": "string", "title": "Info text (down & distance)", "default": "" }
+    },
+    "$defs": {
+      "team": {
+        "type": "object",
+        "properties": {
+          "short": { "type": "string", "default": "TEA" },
+          "color": { "type": "string", "default": "#1d4ed8" },
+          "score": { "type": "integer", "default": 0 }
+        }
+      },
+      "clock": {
+        "type": "object",
+        "description": "The graphic runs the clock itself: value = baseMs -/+ (Date.now() - startedAt) while running.",
+        "properties": {
+          "visible": { "type": "boolean", "default": true },
+          "running": { "type": "boolean", "default": false },
+          "baseMs": { "type": "number", "default": 0 },
+          "startedAt": { "type": "number", "description": "Epoch ms in the renderer's clock", "default": 0 },
+          "direction": { "type": "string", "enum": ["up", "down"], "default": "up" },
+          "tenths": { "type": "boolean", "default": false }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ScoreBug control</title>
+    <link rel="stylesheet" href="control.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ScoreBug</h1>
+      <label class="field">Sport <select id="sport"></select></label>
+      <button id="visible" class="toggle" title="Show or hide the scoreboard on the stream"></button>
+      <span class="spacer"></span>
+      <button id="undo" title="Undo last score change (Ctrl+Z)">Undo score</button>
+      <button id="setup">Teams &amp; settings</button>
+      <button id="reset" class="danger">New match</button>
+      <span id="conn" class="conn" title="Connection to the server"></span>
+    </header>
+
+    <main>
+      <section class="team" data-team="home">
+        <div class="team-head"><img class="logo" alt="" hidden /><h2 class="name"></h2></div>
+        <button class="score" title="Click to type a score"></button>
+        <div class="rows"></div>
+        <div class="stats"></div>
+      </section>
+
+      <section class="center">
+        <div id="period-label" class="period-label"></div>
+        <div id="clock" class="clock">0:00</div>
+        <button id="startstop" class="startstop" data-cmd='{"type":"clock.toggle"}'></button>
+        <div class="nudges">
+          <button data-cmd='{"type":"clock.adjust","deltaMs":-60000}'>−1m</button>
+          <button data-cmd='{"type":"clock.adjust","deltaMs":-10000}'>−10s</button>
+          <button data-cmd='{"type":"clock.adjust","deltaMs":-1000}'>−1s</button>
+          <button data-cmd='{"type":"clock.adjust","deltaMs":1000}'>+1s</button>
+          <button data-cmd='{"type":"clock.adjust","deltaMs":10000}'>+10s</button>
+          <button data-cmd='{"type":"clock.adjust","deltaMs":60000}'>+1m</button>
+        </div>
+        <form id="set-clock" class="set-clock">
+          <input id="clock-input" placeholder="mm:ss" inputmode="numeric" autocomplete="off" aria-label="Set clock to" />
+          <button>Set</button>
+          <button type="button" data-cmd='{"type":"clock.reset"}' title="Reset the clock to the start of this period">Reset</button>
+        </form>
+
+        <h3>Period</h3>
+        <div id="periods" class="periods"></div>
+        <label class="check"><input id="reset-on-period" type="checkbox" checked /> Reset clock when the period changes</label>
+
+        <div id="extras" class="extras"></div>
+      </section>
+
+      <section class="team" data-team="away">
+        <div class="team-head"><img class="logo" alt="" hidden /><h2 class="name"></h2></div>
+        <button class="score" title="Click to type a score"></button>
+        <div class="rows"></div>
+        <div class="stats"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="output">
+        <h3>OBS browser source</h3>
+        <label class="field">Graphic <select id="graphic"></select></label>
+        <div class="url-row">
+          <input id="url" readonly aria-label="Browser source URL" />
+          <button id="copy">Copy URL</button>
+          <a id="open" target="_blank" rel="noopener">Open</a>
+        </div>
+        <p class="hint">Add it in OBS as a Browser source, 1920 × 1080. Shortcuts: Space start/stop · Q W E R home · U I O P away · Shift for minus · Ctrl+Z undo.</p>
+      </div>
+      <div class="preview"><iframe id="preview" title="Preview" width="1920" height="1080"></iframe></div>
+    </footer>
+
+    <dialog id="setup-dialog">
+      <form method="dialog">
+        <h2>Teams &amp; settings</h2>
+        <div class="setup-grid">
+          <fieldset data-team="home">
+            <legend>Home</legend>
+            <label>Name <input name="name" maxlength="40" /></label>
+            <label>Short name <input name="short" maxlength="5" /></label>
+            <label>Colour <input name="color" type="color" /></label>
+            <label>Logo <input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></label>
+            <button type="button" class="clear-logo">Remove logo</button>
+          </fieldset>
+          <fieldset data-team="away">
+            <legend>Away</legend>
+            <label>Name <input name="name" maxlength="40" /></label>
+            <label>Short name <input name="short" maxlength="5" /></label>
+            <label>Colour <input name="color" type="color" /></label>
+            <label>Logo <input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></label>
+            <button type="button" class="clear-logo">Remove logo</button>
+          </fieldset>
+        </div>
+        <fieldset>
+          <legend>Match</legend>
+          <label>Period length (minutes) <input id="period-min" type="number" min="1" max="120" step="1" /></label>
+          <label>Period label
+            <select id="period-style">
+              <option value="short">Short (Q1, 1H)</option>
+              <option value="long">Long (1st Quarter, First Half)</option>
+            </select>
+          </label>
+        </fieldset>
+        <div class="dialog-actions"><button>Done</button></div>
+      </form>
+    </dialog>
+
+    <script type="module" src="control.js"></script>
+  </body>
+</html>
