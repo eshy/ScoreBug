@@ -30,6 +30,7 @@ Each Browser source shows one graphic. Add several sources to use more than one 
 | Graphic id | What it shows |
 |---|---|
 | `scorebar` | American style: centred bar at the bottom (add `&position=top` for the top), logo and name on the edges, scores towards the middle, down & distance, period, clock, shot clock, timeouts, possession, fouls |
+| `scorebar-full` | The same bar, wider (1600px), with full team names beside the logos; long names shrink to fit |
 | `soccer-scorebug` | Soccer style: top-left bar with logos, names, scores, period, clock and stoppage time |
 | `soccer-scorebug-compact` | Soccer style: small top-left two-row bug with short names, scores, clock, period |
 | `score-only` | `21 - 14` |
@@ -65,7 +66,9 @@ The clock is never ticked over the network. The state holds `{ running, baseMs, 
 
 ## Add a graphic or a size
 
-Copy a folder in `graphics/`, change `id` and `name` in the manifest, and edit the CSS custom properties at the top of the style in `graphic.mjs` (`--left`, `--top`, `--height`, font sizes, colours). It appears in the control panel's Graphic list on reload.
+Copy a folder in `graphics/`, change `id` and `name` in the manifest, and edit the CSS custom properties at the top of the style in `graphic.mjs`. It appears in the control panel's Graphic list on reload.
+
+The full guide, with the data fields every template receives, is in [docs/custom-templates.md](docs/custom-templates.md).
 
 ## Test
 
