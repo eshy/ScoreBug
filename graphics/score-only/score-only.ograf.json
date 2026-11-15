@@ -3,7 +3,7 @@
   "id": "score-only",
   "version": "0.1.0",
   "name": "Score only",
-  "description": "Just the two scores with a dash, top centre.",
+  "description": "Just the two scores with a dash, top center.",
   "author": { "name": "ScoreBug" },
   "main": "graphic.mjs",
   "supportsRealTime": true,

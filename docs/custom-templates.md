@@ -23,7 +23,7 @@ The server does not need a restart for template changes.
 | `soccer-scorebug-compact` | `--left`, `--top`, `--row` (row height), `--font`, `--panel`, `--panel-text`, `--accent` |
 | `score-only` | `--top`, `--size`, `--color` |
 
-Team colours are not variables: they come from the control panel's team setup.
+Team colors are not variables: they come from the control panel's team setup.
 
 Everything below the variables is ordinary CSS and HTML inside a shadow root, so you can go further than the variables: reorder elements, change fonts, add a background image.
 
@@ -158,7 +158,7 @@ Each team:
 |---|---|---|
 | `name` | string | Full name |
 | `short` | string | Short name, up to 5 characters |
-| `color` | string | Hex colour, such as `#1d4ed8` |
+| `color` | string | Hex color, such as `#1d4ed8` |
 | `logo` | string | Image URL, or empty when the team has no logo |
 | `score` | number | |
 | `timeouts` | number | Timeouts left |
@@ -190,8 +190,8 @@ Call it from a `requestAnimationFrame` loop and write the text only when it chan
 ## Good habits
 
 - Start hidden (`opacity: 0`) and show only in `playAction`. The operator may open the page while the scoreboard is hidden.
-- Honour `homeSide` unless the template is for one sport only.
+- Honor `homeSide` unless the template is for one sport only.
 - Hide what is empty: no logo, `info` empty, `stoppage` 0, `shotClock.visible` false, `maxTimeouts` 0.
 - Set operator text with `textContent`, never by building HTML from it.
 - Keep the template self-contained: no imports from outside its folder. Then the same folder also loads in other OGraf renderers.
-- Honour `skipAnimation`: when true, jump straight to the end state.
+- Honor `skipAnimation`: when true, jump straight to the end state.

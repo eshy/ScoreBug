@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { isSea } from 'node:sea';
+import { loadLeagues } from './leagues.js';
 import { defaultState, reduce, msUntilExpiry, STATE_VERSION } from './state.js';
 
 // Packaged as a single executable (see scripts/build-release.mjs), the
@@ -19,6 +20,7 @@ const dataDir = process.env.SCOREBUG_DATA || path.join(root, 'data');
 const uploadDir = path.join(dataDir, 'uploads');
 const stateFile = path.join(dataDir, 'state.json');
 const graphicsDir = path.join(root, 'graphics');
+const leaguesDir = path.join(root, 'leagues');
 const PORT = Number(process.env.PORT) || 4747;
 const HOST = process.argv.includes('--lan') ? '0.0.0.0' : '127.0.0.1';
 
@@ -69,6 +71,10 @@ app.use('/icons', express.static(path.join(root, 'public/icons'), noCache));
 app.use('/shared', express.static(path.join(root, 'shared'), noCache));
 app.use('/graphics', express.static(graphicsDir, noCache));
 app.use('/uploads', express.static(uploadDir));
+app.use('/leagues', express.static(leaguesDir, noCache));
+
+// Read on every request, so edited league files show up without a restart.
+app.get('/api/leagues', (req, res) => res.json(loadLeagues(leaguesDir)));
 
 // Every folder in graphics/ holding a *.ograf.json manifest is an OGraf package.
 app.get('/api/graphics', (req, res) => {

@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import { defaultState, reduce, msUntilExpiry } from '../server/state.js';
 import { valueAt, formatClock, parseClock } from '../shared/clock.js';
 import { toGraphicData } from '../shared/view.js';
+import { loadLeagues } from '../server/leagues.js';
+import { SPORTS } from '../shared/sports.js';
+import { fileURLToPath } from 'node:url';
 
 const run = (s, cmds, now = 0) => cmds.reduce((acc, c) => reduce(acc, c, c.at ?? now), s);
 
@@ -159,4 +162,22 @@ test('clock formatting and parsing', () => {
   assert.equal(parseClock('12'), 720_000);
   assert.equal(parseClock(':30'), 30_000);
   assert.equal(parseClock('abc'), null);
+});
+
+test('bundled league packs are well formed', () => {
+  const leagues = loadLeagues(fileURLToPath(new URL('../leagues', import.meta.url)));
+  assert.deepEqual(leagues.map((l) => l.id), ['mls', 'nba', 'nfl']);
+  const counts = Object.fromEntries(leagues.map((l) => [l.id, l.teams.length]));
+  assert.deepEqual(counts, { mls: 30, nba: 30, nfl: 32 });
+  for (const league of leagues) {
+    assert.ok(SPORTS[league.sport], `${league.id} names a known sport`);
+    assert.equal(new Set(league.teams.map((t) => t.id)).size, league.teams.length, `${league.id} team ids are unique`);
+    for (const t of league.teams) {
+      assert.ok(t.name && t.label && t.short.length <= 5, `${league.id}/${t.id} has a name and short name`);
+      assert.match(t.color, /^#[0-9a-f]{6}$/i);
+      assert.equal(t.logo, '', 'no logos are shipped');
+    }
+  }
+  const niners = leagues.find((l) => l.id === 'nfl').teams.find((t) => t.id === 'sf');
+  assert.deepEqual(niners, { id: 'sf', label: 'San Francisco 49ers', name: '49ers', short: 'SF', color: '#AA0000', logo: '' });
 });

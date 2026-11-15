@@ -5,6 +5,7 @@
 //     public/ shared/    the control panel and renderer pages
 //     ScoreBug (network) launcher that starts it with --lan
 //     graphics/          the templates (users can add their own here)
+//     leagues/           team lists and logos for the team picker
 //     docs/ README.txt
 //   dist/ScoreBug-<version>-<os>-<arch>.zip
 //
@@ -68,7 +69,7 @@ if (process.platform === 'darwin') run('codesign', ['--force', '--sign', '-', ex
 if (process.platform !== 'win32') fs.chmodSync(exe, 0o755);
 
 // 3. The folders the server reads at run time.
-for (const dir of ['public', 'shared', 'graphics', 'docs']) {
+for (const dir of ['public', 'shared', 'graphics', 'leagues', 'docs']) {
   fs.cpSync(path.join(root, dir), path.join(outDir, dir), { recursive: true });
 }
 
@@ -102,6 +103,7 @@ the first time.
 
 Your teams, logos and match state are saved in the "data" folder here.
 To add your own templates see docs/custom-templates.md.
+To add team logos or your own league see docs/leagues.md.
 
 Options (run from a terminal):
   ${launcher} --lan       the same as "${lanLauncher}"

@@ -92,7 +92,7 @@ function formatClock(ms, direction, tenths) {
   return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 
-/** Black or white, whichever reads better on the given hex colour. */
+/** Black or white, whichever reads better on the given hex color. */
 function textOn(hex) {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex ?? '');
   if (!m) return '#fff';

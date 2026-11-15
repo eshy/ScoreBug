@@ -1,6 +1,6 @@
-// OGraf graphic: centred score bar in the American broadcast layout.
+// OGraf graphic: centered score bar in the American broadcast layout.
 // Team logo and name sit on the outer edges, the scores face the middle, and
-// the centre block holds down & distance, period, clock and shot clock.
+// the center block holds down & distance, period, clock and shot clock.
 // Sits at the bottom of the frame, or the top with data.position = "top".
 // Self-contained: no imports, so the package is portable.
 // Size and position are the CSS custom properties at the top of the style.
@@ -113,7 +113,7 @@ function formatClock(ms, direction, tenths) {
   return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 
-/** Black or white, whichever reads better on the given hex colour. */
+/** Black or white, whichever reads better on the given hex color. */
 function textOn(hex) {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex ?? '');
   if (!m) return '#fff';

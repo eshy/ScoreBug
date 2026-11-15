@@ -79,20 +79,25 @@
     <dialog id="setup-dialog">
       <form method="dialog">
         <h2>Teams &amp; settings</h2>
+        <label class="league-row">League
+          <select id="league"><option value="">None, I'll type the teams</option></select>
+        </label>
         <div class="setup-grid">
           <fieldset data-team="home">
             <legend>Home</legend>
+            <label class="league-team" hidden>Team <select name="pick"></select></label>
             <label>Name <input name="name" maxlength="40" /></label>
             <label>Short name <input name="short" maxlength="5" /></label>
-            <label>Colour <input name="color" type="color" /></label>
+            <label>Color <input name="color" type="color" /></label>
             <label>Logo <input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></label>
             <button type="button" class="clear-logo">Remove logo</button>
           </fieldset>
           <fieldset data-team="away">
             <legend>Away</legend>
+            <label class="league-team" hidden>Team <select name="pick"></select></label>
             <label>Name <input name="name" maxlength="40" /></label>
             <label>Short name <input name="short" maxlength="5" /></label>
-            <label>Colour <input name="color" type="color" /></label>
+            <label>Color <input name="color" type="color" /></label>
             <label>Logo <input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></label>
             <button type="button" class="clear-logo">Remove logo</button>
           </fieldset>

@@ -33,7 +33,7 @@ Each Browser source shows one graphic. Add several sources to use more than one 
 
 | Graphic id | What it shows |
 |---|---|
-| `scorebar` | American style: centred bar at the bottom (add `&position=top` for the top), logo and name on the edges, scores towards the middle, down & distance, period, clock, shot clock, timeouts, possession, fouls |
+| `scorebar` | American style: centered bar at the bottom (add `&position=top` for the top), logo and name on the edges, scores toward the middle, down & distance, period, clock, shot clock, timeouts, possession, fouls |
 | `scorebar-full` | The same bar, wider (1600px), with full team names beside the logos; long names shrink to fit |
 | `soccer-scorebug` | Soccer style: top-left bar with logos, names, scores, period, clock and stoppage time |
 | `soccer-scorebug-compact` | Soccer style: small top-left two-row bug with short names, scores, clock, period |
@@ -62,7 +62,7 @@ OBS remembers the dock. Show or hide it from the Docks menu.
 - American Football and Basketball show the visitor on the left and the home team on the right (Away at Home); Soccer shows the home team on the left. The control panel columns follow the same order.
 - Down & distance (football) and the shot clock (basketball) each have a **Show** checkbox. Untick it to take that detail off the graphic if you don't want to keep it updated.
 - **On air / Hidden** animates the graphic in and out.
-- **Teams & settings**: names, short names, colours, logos, period length, short or long period labels, and the possession indicator (a dot, a football, or your own image).
+- **Teams & settings**: pick both teams from a league (NFL, NBA and MLS are included) to fill in name, short name, color and logo, or type them yourself. Also names, short names, colors, logos, period length, short or long period labels, and the possession indicator (a dot, a football, or your own image).
 - Keys: `Space` start/stop · `Q W E R` left team's score rows · `U I O P` right team's score rows · `Shift` for minus · `Ctrl+Z` undo.
 
 The match state is saved in `data/state.json` and survives a restart. A running clock keeps real time while the server is down.
@@ -110,6 +110,10 @@ The clock is never ticked over the network. The state holds `{ running, baseMs, 
 Copy a folder in `graphics/`, change `id` and `name` in the manifest, and edit the CSS custom properties at the top of the style in `graphic.mjs`. It appears in the control panel's Graphic list on reload.
 
 The full guide, with the data fields every template receives, is in [docs/custom-templates.md](docs/custom-templates.md).
+
+## Leagues and team logos
+
+Each folder in `leagues/` is a league for the team picker: a `league.json` with the teams and a `logos/` folder. ScoreBug ships the team lists and colors for the NFL, NBA and MLS but no logos; drop your own image files into `logos/`, named after the team id (`sf.png`). To change colors or add a league, edit or copy a folder. See [docs/leagues.md](docs/leagues.md).
 
 ## Test
 

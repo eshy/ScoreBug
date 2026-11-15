@@ -55,7 +55,7 @@ async function main() {
     }
   }
 
-  // Calls into the graphic are serialised so load() always finishes first.
+  // Calls into the graphic are serialized so load() always finishes first.
   connect((state, offset) => {
     queue = queue.then(() => apply(state, offset)).catch((err) => console.error(err));
   });

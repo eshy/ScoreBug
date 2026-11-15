@@ -262,6 +262,7 @@ $('#setup').addEventListener('click', () => {
   $('#period-min').value = state.periodMin[state.sport];
   $('#period-style').value = state.periodStyle;
   syncPossessionIcon();
+  loadLeagues();
   dialog.showModal();
 });
 
@@ -279,6 +280,56 @@ for (const team of TEAMS) {
   $('.clear-logo', set).addEventListener('click', () => {
     set.elements.logo.value = '';
     send({ type: 'team.update', team, logo: '' });
+  });
+}
+
+// ---- league team picker ----------------------------------------------------------
+
+let leagues = [];
+
+/** Fetched each time the dialog opens, so new logo files and edits show up. */
+async function loadLeagues() {
+  leagues = await (await fetch('/api/leagues')).json().catch(() => []);
+  const select = $('#league');
+  const saved = localStorage.getItem('league') ?? '';
+  select.length = 1; // keep the "None" option
+  for (const l of leagues) select.add(new Option(l.name, l.id));
+  select.value = leagues.some((l) => l.id === saved) ? saved : '';
+  fillTeamPickers();
+}
+
+function fillTeamPickers() {
+  const league = leagues.find((l) => l.id === $('#league').value);
+  for (const team of TEAMS) {
+    const set = $(`fieldset[data-team="${team}"]`, dialog);
+    const pick = set.elements.pick;
+    pick.closest('label').hidden = !league;
+    pick.length = 0;
+    if (!league) continue;
+    pick.add(new Option('Choose a team...', ''));
+    for (const t of league.teams) pick.add(new Option(t.label, t.id));
+    // Preselect the team already on the scoreboard, if it is from this league.
+    const current = state.teams[team];
+    pick.value = league.teams.find((t) => t.name === current.name && t.short === current.short)?.id ?? '';
+  }
+}
+
+$('#league').addEventListener('change', (e) => {
+  localStorage.setItem('league', e.target.value);
+  fillTeamPickers();
+});
+
+for (const team of TEAMS) {
+  const set = $(`fieldset[data-team="${team}"]`, dialog);
+  set.elements.pick.addEventListener('change', (e) => {
+    const league = leagues.find((l) => l.id === $('#league').value);
+    const t = league?.teams.find((x) => x.id === e.target.value);
+    if (!t) return;
+    send({ type: 'team.update', team, name: t.name, short: t.short, color: t.color, logo: t.logo });
+    set.elements.name.value = t.name;
+    set.elements.short.value = t.short;
+    set.elements.color.value = t.color.toLowerCase();
+    set.elements.logo.value = '';
   });
 }
 
