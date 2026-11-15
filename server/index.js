@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { isSea } from 'node:sea';
-import { loadLeagues } from './leagues.js';
+import { loadLeagues, saveTeamLogo } from './leagues.js';
 import { defaultState, reduce, msUntilExpiry, STATE_VERSION } from './state.js';
 
 // Packaged as a single executable (see scripts/build-release.mjs), the
@@ -119,6 +119,17 @@ app.put('/api/logo/:team', imageBody, (req, res) => {
   if (!logo) return res.status(400).json({ error: 'Send a PNG, JPEG, WebP or SVG image for team home or away.' });
   dispatch({ type: 'team.update', team, logo });
   res.json({ logo });
+});
+
+// A logo uploaded for a league team is kept in that league's logos folder,
+// so the team has it every time it is picked from now on.
+app.put('/api/leagues/:league/teams/:team/logo', imageBody, (req, res) => {
+  const ext = LOGO_TYPES[req.headers['content-type']?.split(';')[0]];
+  const ok = ext && Buffer.isBuffer(req.body) && req.body.length;
+  const logo = ok ? saveTeamLogo(leaguesDir, req.params.league, req.params.team, ext, req.body) : null;
+  if (!logo) return res.status(400).json({ error: 'Send a PNG, JPEG, WebP or SVG image for a team in that league.' });
+  // The version makes browsers and OBS load the new image over a replaced one.
+  res.json({ logo: `${logo}?v=${Date.now()}` });
 });
 
 app.put('/api/possession-icon', imageBody, (req, res) => {

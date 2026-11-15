@@ -274,8 +274,19 @@ for (const team of TEAMS) {
   set.elements.logo.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const res = await fetch(`/api/logo/${team}`, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
-    if (!res.ok) alert((await res.json().catch(() => ({}))).error ?? 'Logo upload failed.');
+    // With a league team picked, the logo is saved in that league's folder
+    // and stays with the team; otherwise it is just this match's logo.
+    const picked = pickedLeagueTeam(team);
+    const url = picked
+      ? `/api/leagues/${encodeURIComponent(picked.league.id)}/teams/${encodeURIComponent(picked.team.id)}/logo`
+      : `/api/logo/${team}`;
+    const res = await fetch(url, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) return alert(body.error ?? 'Logo upload failed.');
+    if (picked) {
+      send({ type: 'team.update', team, logo: body.logo });
+      await loadLeagues();
+    }
   });
   $('.clear-logo', set).addEventListener('click', () => {
     set.elements.logo.value = '';
@@ -298,8 +309,43 @@ async function loadLeagues() {
   fillTeamPickers();
 }
 
+/** "Logos: 30 of 32 found. No logo for: ... Not recognized: ..." */
+function logoStatus(league) {
+  const { found, missing, unmatched } = league.logos;
+  const total = league.teams.length;
+  const list = (items) => (items.length > 6 ? `${items.slice(0, 6).join(', ')} and ${items.length - 6} more` : items.join(', '));
+  if (!found && !unmatched.length) return `No logos yet. Put image files in leagues/${league.id}/logos.`;
+  let text = `Logos: ${found} of ${total} found.`;
+  if (missing.length && found) text += ` No logo for: ${list(missing)}.`;
+  if (unmatched.length) text += ` Not recognized: ${list(unmatched)}. Rename these after the team.`;
+  return text;
+}
+
+/** The league team chosen in a side's Team list, if any. */
+function pickedLeagueTeam(side) {
+  const league = leagues.find((l) => l.id === $('#league').value);
+  const id = $(`fieldset[data-team="${side}"]`, dialog).elements.pick.value;
+  const team = league?.teams.find((t) => t.id === id);
+  return team ? { league, team } : null;
+}
+
+function updateLogoHints() {
+  for (const side of TEAMS) {
+    const hint = $(`fieldset[data-team="${side}"] .logo-hint`, dialog);
+    const picked = pickedLeagueTeam(side);
+    hint.hidden = !picked;
+    if (picked) {
+      hint.textContent = picked.team.logo
+        ? `Choosing a file replaces the ${picked.team.label} logo saved in ${picked.league.name}.`
+        : `Choose a file to save it as the ${picked.team.label} logo in ${picked.league.name}.`;
+    }
+  }
+}
+
 function fillTeamPickers() {
   const league = leagues.find((l) => l.id === $('#league').value);
+  $('#league-logos').hidden = !league;
+  if (league) $('#league-logos').textContent = logoStatus(league);
   for (const team of TEAMS) {
     const set = $(`fieldset[data-team="${team}"]`, dialog);
     const pick = set.elements.pick;
@@ -312,6 +358,7 @@ function fillTeamPickers() {
     const current = state.teams[team];
     pick.value = league.teams.find((t) => t.name === current.name && t.short === current.short)?.id ?? '';
   }
+  updateLogoHints();
 }
 
 $('#league').addEventListener('change', (e) => {
@@ -324,6 +371,7 @@ for (const team of TEAMS) {
   set.elements.pick.addEventListener('change', (e) => {
     const league = leagues.find((l) => l.id === $('#league').value);
     const t = league?.teams.find((x) => x.id === e.target.value);
+    updateLogoHints();
     if (!t) return;
     send({ type: 'team.update', team, name: t.name, short: t.short, color: t.color, logo: t.logo });
     set.elements.name.value = t.name;

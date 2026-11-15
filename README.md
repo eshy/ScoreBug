@@ -113,7 +113,7 @@ The full guide, with the data fields every template receives, is in [docs/custom
 
 ## Leagues and team logos
 
-Each folder in `leagues/` is a league for the team picker: a `league.json` with the teams and a `logos/` folder. ScoreBug ships the team lists and colors for the NFL, NBA and MLS but no logos; drop your own image files into `logos/`, named after the team id (`sf.png`). To change colors or add a league, edit or copy a folder. See [docs/leagues.md](docs/leagues.md).
+Each folder in `leagues/` is a league for the team picker: a `league.json` with the teams and a `logos/` folder. ScoreBug ships the team lists and colors for the NFL, NBA and MLS but no logos; drop your own image files into `logos/`. They are matched to teams by file name (`sf.png`, `49ers.png` and `San Francisco 49ers.png` all work), and Teams & settings shows which teams still have no logo. You can also upload a logo there after picking a team; it is saved to the league folder for next time. To change colors or add a league, edit or copy a folder. See [docs/leagues.md](docs/leagues.md).
 
 ## Test
 

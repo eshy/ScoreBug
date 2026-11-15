@@ -82,6 +82,7 @@
         <label class="league-row">League
           <select id="league"><option value="">None, I'll type the teams</option></select>
         </label>
+        <p id="league-logos" class="league-logos" hidden></p>
         <div class="setup-grid">
           <fieldset data-team="home">
             <legend>Home</legend>
@@ -90,6 +91,7 @@
             <label>Short name <input name="short" maxlength="5" /></label>
             <label>Color <input name="color" type="color" /></label>
             <label>Logo <input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></label>
+            <small class="logo-hint" hidden></small>
             <button type="button" class="clear-logo">Remove logo</button>
           </fieldset>
           <fieldset data-team="away">
@@ -99,6 +101,7 @@
             <label>Short name <input name="short" maxlength="5" /></label>
             <label>Color <input name="color" type="color" /></label>
             <label>Logo <input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></label>
+            <small class="logo-hint" hidden></small>
             <button type="button" class="clear-logo">Remove logo</button>
           </fieldset>
         </div>

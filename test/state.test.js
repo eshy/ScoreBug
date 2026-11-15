@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { defaultState, reduce, msUntilExpiry } from '../server/state.js';
 import { valueAt, formatClock, parseClock } from '../shared/clock.js';
 import { toGraphicData } from '../shared/view.js';
-import { loadLeagues } from '../server/leagues.js';
+import { loadLeagues, matchLogos, saveTeamLogo } from '../server/leagues.js';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { SPORTS } from '../shared/sports.js';
 import { fileURLToPath } from 'node:url';
 
@@ -177,7 +180,93 @@ test('bundled league packs are well formed', () => {
       assert.match(t.color, /^#[0-9a-f]{6}$/i);
       assert.equal(t.logo, '', 'no logos are shipped');
     }
+    assert.deepEqual(league.logos, { found: 0, missing: league.teams.map((t) => t.label), unmatched: [] });
   }
   const niners = leagues.find((l) => l.id === 'nfl').teams.find((t) => t.id === 'sf');
   assert.deepEqual(niners, { id: 'sf', label: 'San Francisco 49ers', name: '49ers', short: 'SF', color: '#AA0000', logo: '' });
+});
+
+test('logo files are matched to teams by loose names', () => {
+  const nba = [
+    { id: 'cha', short: 'CHA', city: 'Charlotte', name: 'Hornets' },
+    { id: 'bkn', short: 'BKN', city: 'Brooklyn', name: 'Nets' },
+    { id: 'lal', short: 'LAL', city: 'Los Angeles', name: 'Lakers' },
+    { id: 'lac', short: 'LAC', city: 'LA', name: 'Clippers' },
+    { id: 'phi', short: 'PHI', city: 'Philadelphia', name: '76ers' },
+    { id: 'nyk', short: 'NYK', city: 'New York', name: 'Knicks' },
+  ];
+  const { byTeam, unmatched } = matchLogos(
+    nba,
+    [
+      'charlotte-hornets.png', // contains "nets" too: the longer name wins
+      'Nets_Logo_2024.svg',
+      'LAL.png',
+      'la clippers primary logo.webp',
+      'Philadelphia 76ers.jpg',
+      'knicks.png',
+      'knicks.svg', // two files for one team: svg is preferred
+      'nba-logo.png', // the league's own logo is not a team
+      'mystery.png',
+      'README.txt',
+    ],
+    ['nba'],
+  );
+  assert.deepEqual(Object.fromEntries(byTeam), {
+    cha: 'charlotte-hornets.png',
+    bkn: 'Nets_Logo_2024.svg',
+    lal: 'LAL.png',
+    lac: 'la clippers primary logo.webp',
+    phi: 'Philadelphia 76ers.jpg',
+    nyk: 'knicks.svg',
+  });
+  assert.deepEqual(unmatched, ['knicks.png', 'mystery.png', 'nba-logo.png']);
+
+  // A city shared by two teams does not pick one of them.
+  const nfl = [
+    { id: 'nyg', short: 'NYG', city: 'New York', name: 'Giants' },
+    { id: 'nyj', short: 'NYJ', city: 'New York', name: 'Jets' },
+    { id: 'sf', short: 'SF', city: 'San Francisco', name: '49ers' },
+  ];
+  const r = matchLogos(nfl, ['New York.png', 'san francisco.png', 'jets.png']);
+  assert.deepEqual(Object.fromEntries(r.byTeam), { sf: 'san francisco.png', nyj: 'jets.png' });
+  assert.deepEqual(r.unmatched, ['New York.png']);
+});
+
+test('a league folder reports found, missing and unrecognized logos', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'scorebug-leagues-'));
+  try {
+    const logos = path.join(dir, 'demo', 'logos');
+    fs.mkdirSync(logos, { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'demo', 'league.json'),
+      JSON.stringify({
+        name: 'Demo',
+        sport: 'soccer',
+        teams: [
+          { id: 'lions', short: 'LIO', name: 'Lakeside Lions', color: '#1D4ED8' },
+          { id: 'hawks', short: 'HAW', name: 'Harbor Hawks', color: '#B91C1C' },
+          { id: 'owls', short: 'OWL', name: 'Night Owls', color: '#111111', logo: 'special.png' },
+        ],
+      }),
+    );
+    for (const f of ['Lakeside Lions Logo.png', 'special.png', 'other.png']) fs.writeFileSync(path.join(logos, f), '');
+    const [league] = loadLeagues(dir);
+    const logo = (id) => league.teams.find((t) => t.id === id).logo;
+    assert.equal(logo('lions'), '/leagues/demo/logos/Lakeside%20Lions%20Logo.png');
+    assert.equal(logo('owls'), '/leagues/demo/logos/special.png');
+    assert.equal(logo('hawks'), '');
+    assert.deepEqual(league.logos, { found: 2, missing: ['Harbor Hawks'], unmatched: ['other.png'] });
+
+    // An upload is saved under the team id and wins over a loosely named file.
+    assert.equal(saveTeamLogo(dir, 'demo', 'lions', 'svg', '<svg/>'), '/leagues/demo/logos/lions.svg');
+    assert.equal(saveTeamLogo(dir, 'demo', 'lions', 'png', 'x'), '/leagues/demo/logos/lions.png');
+    assert.equal(fs.existsSync(path.join(logos, 'lions.svg')), false, 'the earlier upload is replaced');
+    const after = loadLeagues(dir)[0];
+    assert.equal(after.teams.find((t) => t.id === 'lions').logo, '/leagues/demo/logos/lions.png');
+    assert.deepEqual(after.logos.unmatched, ['Lakeside Lions Logo.png', 'other.png']);
+    assert.equal(saveTeamLogo(dir, 'demo', 'nobody', 'png', 'x'), null);
+    assert.equal(saveTeamLogo(dir, '../demo', 'lions', 'png', 'x'), null);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

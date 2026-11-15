@@ -1,8 +1,10 @@
 Put team logos in this folder. ScoreBug does not ship any.
 
-Name each file after the team's "id" in ../league.json, in lower case:
-  atl.png
+You do not need to rename them. ScoreBug matches each file to a team by its
+name, for example "Atlanta Hawks.png", the team's short name, or just the
+team name. PNG, SVG, WebP and JPEG work. Transparent, roughly square images
+look best.
 
-PNG, SVG, WebP and JPEG work. Transparent, roughly square images look best.
-Reopen "Teams & settings" in the control panel to pick them up.
+Open "Teams & settings" in the control panel and choose this league to see
+which teams have a logo and which files were not recognized.
 See docs/leagues.md for more.
