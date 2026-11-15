@@ -35,6 +35,7 @@ Each Browser source shows one graphic. Add several sources to use more than one 
 |---|---|
 | `scorebar` | American style: centered bar at the bottom (add `&position=top` for the top), logo and name on the edges, scores toward the middle, down & distance, period, clock, shot clock, timeouts, possession, fouls |
 | `scorebar-full` | The same bar, wider (1600px), with full team names beside the logos; long names shrink to fit |
+| `scorebar-logos` | Big Logos: the same bar, narrower (1040px), with no team names; each logo fills the full height of the bar. A team without a logo shows its short name |
 | `soccer-scorebug` | Soccer style: top-left bar with logos, names, scores, period, clock and stoppage time |
 | `soccer-scorebug-compact` | Soccer style: small top-left two-row bug with short names, scores, clock, period |
 | `score-only` | `21 - 14` |

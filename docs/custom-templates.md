@@ -19,6 +19,7 @@ The server does not need a restart for template changes.
 | Template | Variables |
 |---|---|
 | `scorebar`, `scorebar-full` | `--width`, `--height`, `--edge` (gap to the bottom or top of the frame), `--center` (width of the middle block), `--name-size`, `--score-size`, `--panel`, `--panel-2`, `--panel-text`, `--accent` |
+| `scorebar-logos` | The same as `scorebar`, plus `--logo-width` (the logo box; the logo always fills the full height) |
 | `soccer-scorebug` | `--left`, `--top`, `--height`, `--name-size`, `--score-size`, `--panel`, `--panel-text`, `--accent` |
 | `soccer-scorebug-compact` | `--left`, `--top`, `--row` (row height), `--font`, `--panel`, `--panel-text`, `--accent` |
 | `score-only` | `--top`, `--size`, `--color` |
